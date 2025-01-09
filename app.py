@@ -1,15 +1,14 @@
 import streamlit as st
-import firebase_admin
-from firebase_admin import credentials, firestore
 from datetime import date
 import pandas as pd
 import plotly.express as px
+from google.cloud import firestore
+from google.oauth2 import service_account
+import json
 
-if not firebase_admin._apps:
-    cred = credentials.Certificate("serviceAccountKey.json")
-    firebase_admin.initialize_app(cred)
-
-db = firestore.client()
+key_dict = json.loads(st.secrets["textkey"])
+creds = service_account.Credentials.from_service_account_info(key_dict)
+db = firestore.Client(credentials=creds, project="minerva-aba90")
 
 def get_mentors():
     mentors = db.collection('mentors').get()
